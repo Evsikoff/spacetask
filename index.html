@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Космическая задача</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="background">
+    <!-- Using error handling for image if it doesn't exist yet, but per requirements it's expected at images/rocket.png -->
+    <img src="images/rocket.png" alt="Ракета" id="rocket-img" />
+  </div>
+
+  <div class="app-container">
+    <header class="header">
+      <h1 class="visually-hidden">Космическая задача</h1>
+      <div class="help-wrapper">
+        <button id="help-btn" class="help-btn" aria-label="Как играть?">?</button>
+        <div id="help-tooltip" class="help-tooltip hidden">
+          <div class="help-tooltip-content">
+            <button id="close-help-btn" class="close-help-btn">&times;</button>
+            <h3>Как играть?</h3>
+            <p>Заполняйте слова по вертикали. Цвета подскажут, правильные ли буквы вы ввели:</p>
+            <ul>
+              <li><span class="color-box correct"></span> <strong>Зеленый:</strong> Буква есть в слове и стоит на своем месте.</li>
+              <li><span class="color-box present"></span> <strong>Желтый:</strong> Буква есть в слове, но должна быть в другой клетке.</li>
+              <li><span class="color-box absent"></span> <strong>Серый:</strong> Такой буквы в этом слове нет.</li>
+            </ul>
+            <p>Когда все 11 слов будут разгаданы, по горизонтали сложится ключевое слово!</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="questions-section">
+        <h2>Вопросы:</h2>
+        <ol id="questions-list" class="questions-list">
+          <!-- Вопросы будут сгенерированы через JS -->
+        </ol>
+      </section>
+
+      <section class="grid-section">
+        <div id="grid-container" class="grid-container">
+          <!-- Сетка будет сгенерирована через JS -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
