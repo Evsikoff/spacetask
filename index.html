@@ -7,14 +7,12 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="background">
-    <!-- Using error handling for image if it doesn't exist yet, but per requirements it's expected at images/rocket.png -->
-    <img src="images/rocket.png" alt="Ракета" id="rocket-img" />
-  </div>
-
   <div class="app-container">
     <header class="header">
-      <h1 class="visually-hidden">Космическая задача</h1>
+      <div class="header-title">
+        <img src="images/rocket.png" alt="" class="header-rocket" />
+        <h1>Космическая задача</h1>
+      </div>
       <div class="help-wrapper">
         <button id="help-btn" class="help-btn" aria-label="Как играть?">?</button>
         <div id="help-tooltip" class="help-tooltip hidden">

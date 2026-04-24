@@ -135,6 +135,7 @@ function generateGrid() {
       input.addEventListener('input', handleInput);
       input.addEventListener('keydown', handleKeydown);
       input.addEventListener('focus', handleFocus);
+      input.addEventListener('click', handleClick);
 
       colDiv.appendChild(input);
     }
@@ -161,7 +162,12 @@ function handleFocus(e) {
   document.querySelectorAll('#questions-list li').forEach(li => li.classList.remove('active'));
   document.querySelector(`#questions-list li[data-col-index="${colIndex}"]`).classList.add('active');
 
-  // Select text to allow easy overwrite
+  // Select the existing character so typing replaces it (maxLength=1 blocks plain insertion)
+  e.target.select();
+}
+
+function handleClick(e) {
+  // focus doesn't fire when clicking an already-focused cell — reselect here too
   e.target.select();
 }
 
@@ -181,7 +187,6 @@ function handleInput(e) {
   resetColumnColors(colDiv);
 
   if (input.value) {
-    // Move to the immediately next cell in the column, if it exists and is not disabled
     const nextInput = colDiv.querySelectorAll('input')[rowIndex + 1];
     if (nextInput && !nextInput.disabled) {
       nextInput.focus();
@@ -196,15 +201,28 @@ function handleKeydown(e) {
   const colIndex = parseInt(input.dataset.col);
   const rowIndex = parseInt(input.dataset.row);
 
-  if (e.key === 'Backspace' && !input.value) {
-    // Move to previous cell
+  if (e.key === 'Backspace') {
+    e.preventDefault();
+    const colDiv = gridContainer.children[colIndex];
+    const hadValue = !!input.value;
+    if (hadValue) {
+      // Clear current cell and move to previous in one step
+      input.value = '';
+      state.gridState[`col_${colIndex + 1}`][rowIndex] = '';
+      resetColumnColors(colDiv);
+      checkColumnCompletion(colIndex, colDiv);
+    }
     if (rowIndex > 0) {
-      const prevInput = gridContainer.children[colIndex].querySelectorAll('input')[rowIndex - 1];
+      const prevInput = colDiv.querySelectorAll('input')[rowIndex - 1];
       if (prevInput && !prevInput.disabled) {
         prevInput.focus();
-        prevInput.value = '';
-        state.gridState[`col_${colIndex + 1}`][rowIndex - 1] = '';
-        resetColumnColors(gridContainer.children[colIndex]);
+        if (!hadValue) {
+          // Cell was already empty — clear the previous cell too (original behaviour)
+          prevInput.value = '';
+          state.gridState[`col_${colIndex + 1}`][rowIndex - 1] = '';
+          resetColumnColors(colDiv);
+          checkColumnCompletion(colIndex, colDiv);
+        }
       }
     }
   } else if (e.key === 'ArrowDown') {
