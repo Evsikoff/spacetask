@@ -160,6 +160,9 @@ function handleFocus(e) {
   const colIndex = e.target.dataset.col;
   document.querySelectorAll('#questions-list li').forEach(li => li.classList.remove('active'));
   document.querySelector(`#questions-list li[data-col-index="${colIndex}"]`).classList.add('active');
+
+  // Select text to allow easy overwrite
+  e.target.select();
 }
 
 function handleInput(e) {
@@ -178,8 +181,11 @@ function handleInput(e) {
   resetColumnColors(colDiv);
 
   if (input.value) {
-    // Move to next empty in column
-    focusNextEmptyInColumn(colIndex, rowIndex);
+    // Move to the immediately next cell in the column, if it exists and is not disabled
+    const nextInput = colDiv.querySelectorAll('input')[rowIndex + 1];
+    if (nextInput && !nextInput.disabled) {
+      nextInput.focus();
+    }
   }
 
   checkColumnCompletion(colIndex, colDiv);
@@ -230,15 +236,6 @@ function handleKeydown(e) {
   }
 }
 
-function focusNextEmptyInColumn(colIndex, currentRowIndex) {
-  const inputs = gridContainer.children[colIndex].querySelectorAll('input');
-  for (let i = 0; i < inputs.length; i++) {
-    if (!inputs[i].value && !inputs[i].disabled) {
-      inputs[i].focus();
-      return;
-    }
-  }
-}
 
 function focusOnColumn(colIndex) {
   const inputs = gridContainer.children[colIndex].querySelectorAll('input');
@@ -317,6 +314,7 @@ function validateColumn(colIndex, colDiv, isRestoring) {
       checkVictory();
     }
   } else if (!allCorrect && !isRestoring) {
+      // Allow user to try again: do NOT disable inputs
       state.step++; // Dummy step increment on failed attempt too
       reportProgress();
   }
